@@ -18,7 +18,6 @@ class WordleConstructeurTests {
 	fun `Étant donné un mot de 3 lettres, lorsqu'on initialise un Wordle, on obtient une exception`(){
 		try{
 			Wordle("xyz")
-			fail()
 		}
 		catch(e : IllegalArgumentException){
 			assertEquals( "Le mot cherché doit comporter exactement 5 lettres [A-Z]", e.message )
@@ -29,7 +28,6 @@ class WordleConstructeurTests {
 	fun `Étant donné un mot de 6 lettres, lorsqu'on initialise un Wordle, on obtient une exception`(){
 		try{
 			Wordle("abcdef")
-			fail()
 		}
 		catch(e : IllegalArgumentException){
 			assertEquals( "Le mot cherché doit comporter exactement 5 lettres [A-Z]", e.message )

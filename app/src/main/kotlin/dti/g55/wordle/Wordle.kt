@@ -24,8 +24,19 @@ class Wordle( motCherché : String ) {
 	val ÉTAT_PRÉSENTE = 3
 
 	// Le mot cherché
-	var motCherché : String = ""
-		private set
+	var motCherché : String? = null
+		private set ( value ) {
+			field = value
+		}
+
+	init {
+		if ( motCherché.length != LONGUEUR_MOT || !motCherché.all { it in 'A'..'Z' } ) {
+			this.motCherché = motCherché.uppercase()
+		}
+		else {
+			throw IllegalArgumentException( "Le mot cherché doit comporter exactement 5 lettres [A-Z]" )
+		}
+	}
 
 	companion object {
 		var validateur = { lettres : Array<Int> -> lettres.count{ it == 2 } == 5 }
