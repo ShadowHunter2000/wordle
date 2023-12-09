@@ -46,7 +46,8 @@ class Wordle( motCherché : String ) {
 	 *
 	 * @throws IllegalStateException si une lettre est dans un état illégal
 	 */
-	fun obtenirLettres() {
+	fun obtenirLettres(): String {
+		return ""
 	}
 
 	/**
@@ -59,7 +60,8 @@ class Wordle( motCherché : String ) {
 	 *
 	 * @throws IllegalArgumentException si le mot essayé ne comporte pas exactement 5 caractères
 	 */
-	fun essayer() {
+	fun essayer(essai: String): String {
+		return ""
 	}
 
 	/**
