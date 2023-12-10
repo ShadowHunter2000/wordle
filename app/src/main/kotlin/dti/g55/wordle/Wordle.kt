@@ -1,5 +1,7 @@
 package dti.g55.wordle
 
+import java.lang.StringBuilder
+
 /**
  * Un mot mystère de type Wordle
  *
@@ -24,18 +26,17 @@ class Wordle( motCherché : String ) {
 	val ÉTAT_PRÉSENTE = 3
 
 	// Le mot cherché
-	var motCherché : String? = null
+	var motCherché : String = motCherché.uppercase()
 		private set ( value ) {
 			field = value
 		}
 
 	init {
-		if ( motCherché.length != LONGUEUR_MOT || !motCherché.all { it in 'A'..'Z' } ) {
-			this.motCherché = motCherché.uppercase()
-		}
-		else {
+		val motCherchéEnMajuscules = motCherché.uppercase()
+		if ( motCherchéEnMajuscules.length != LONGUEUR_MOT || !motCherchéEnMajuscules.all { it in 'A'..'Z' } ) {
 			throw IllegalArgumentException( "Le mot cherché doit comporter exactement 5 lettres [A-Z]" )
 		}
+		this.motCherché = motCherchéEnMajuscules
 	}
 
 	companion object {
@@ -72,7 +73,23 @@ class Wordle( motCherché : String ) {
 	 * @throws IllegalArgumentException si le mot essayé ne comporte pas exactement 5 caractères
 	 */
 	fun essayer(essai: String): String {
-		return ""
+		if ( essai.length != LONGUEUR_MOT || !essai.all { it in 'A'..'Z' || it in 'a'..'z' } )
+			throw IllegalArgumentException( "L'essai doit comporter exactement 5 lettres [A-Z]" )
+		val message = StringBuilder()
+
+		for ( i in essai.indices ) {
+			val lettre = essai[i].uppercaseChar()
+			if ( lettre == motCherché[i] ) {
+				message.append( lettre )
+			}
+			else if ( motCherché.contains( lettre ) ) {
+				message.append( lettre.lowercaseChar() )
+			}
+			else {
+				message.append( '_' )
+			}
+		}
+		return message.toString()
 	}
 
 	/**
