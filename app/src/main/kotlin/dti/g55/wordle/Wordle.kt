@@ -59,7 +59,20 @@ class Wordle( motCherché : String ) {
 	 * @throws IllegalStateException si une lettre est dans un état illégal
 	 */
 	fun obtenirLettres(): String {
-		return ""
+		val resultat = StringBuilder()
+		for ( i in 'A'..'Z' ) {
+			val index = i - 'A'
+			val etat = lettres[ index ]
+			val etatLettre = when ( etat ) {
+				ÉTAT_INCONNUE -> '*'
+				ÉTAT_ABSENTE -> '_'
+				ÉTAT_CORRECTE -> i
+				ÉTAT_PRÉSENTE -> i.lowercaseChar()
+				else -> throw IllegalStateException( "L'état de la lettre est illégal" )
+			}
+			resultat.append( etatLettre )
+		}
+		return resultat.toString()
 	}
 
 	/**
