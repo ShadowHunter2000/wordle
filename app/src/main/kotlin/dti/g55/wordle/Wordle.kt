@@ -1,5 +1,7 @@
 package dti.g55.wordle
 
+import java.lang.StringBuilder
+
 /**
  * Un mot mystère de type Wordle
  *
@@ -24,8 +26,18 @@ class Wordle( motCherché : String ) {
 	val ÉTAT_PRÉSENTE = 3
 
 	// Le mot cherché
-	var motCherché : String = ""
-		private set
+	var motCherché : String = motCherché.uppercase()
+		private set ( value ) {
+			field = value
+		}
+
+	init {
+		val motCherchéEnMajuscules = motCherché.uppercase()
+		if ( motCherchéEnMajuscules.length != LONGUEUR_MOT || !motCherchéEnMajuscules.all { it in 'A'..'Z' } ) {
+			throw IllegalArgumentException( "Le mot cherché doit comporter exactement 5 lettres [A-Z]" )
+		}
+		this.motCherché = motCherchéEnMajuscules
+	}
 
 	companion object {
 		var validateur = { lettres : Array<Int> -> lettres.count{ it == 2 } == 5 }
@@ -47,7 +59,20 @@ class Wordle( motCherché : String ) {
 	 * @throws IllegalStateException si une lettre est dans un état illégal
 	 */
 	fun obtenirLettres(): String {
-		return ""
+		val resultat = StringBuilder()
+		for ( i in 'A'..'Z' ) {
+			val index = i - 'A'
+			val etat = lettres[index]
+			val etatLettre = when ( etat ) {
+				ÉTAT_INCONNUE -> '*'
+				ÉTAT_ABSENTE -> '_'
+				ÉTAT_CORRECTE -> i
+				ÉTAT_PRÉSENTE -> i.lowercaseChar()
+				else -> throw IllegalStateException( "L'état de la lettre est illégal" )
+			}
+			resultat.append( etatLettre )
+		}
+		return resultat.toString()
 	}
 
 	/**
@@ -61,7 +86,36 @@ class Wordle( motCherché : String ) {
 	 * @throws IllegalArgumentException si le mot essayé ne comporte pas exactement 5 caractères
 	 */
 	fun essayer(essai: String): String {
-		return ""
+		if ( essai.length != LONGUEUR_MOT || !essai.all { it in 'A'..'Z' || it in 'a'..'z' } )
+			throw IllegalArgumentException( "L'essai doit comporter exactement 5 lettres [A-Z]" )
+		val message = StringBuilder()
+
+		for ( i in essai.indices ) {
+			val lettre = essai[i].uppercaseChar()
+			if ( lettre == motCherché[i] ) {
+				if ( lettres[lettre - 'A'] == ÉTAT_CORRECTE ) {
+					message.append( lettre )
+				} else {
+					message.append( lettre )
+					lettres[lettre - 'A'] = ÉTAT_CORRECTE
+				}
+			} else if ( motCherché.contains( lettre ) && lettres[lettre - 'A'] != ÉTAT_CORRECTE ) {
+				if ( lettres[lettre - 'A'] != ÉTAT_CORRECTE ) {
+					message.append( lettre.lowercaseChar() )
+					lettres[lettre - 'A'] = ÉTAT_PRÉSENTE
+				} else {
+					message.append( '_' )
+				}
+			} else {
+				if ( lettres[lettre - 'A'] != ÉTAT_CORRECTE ) {
+					message.append( '_' )
+					lettres[lettre - 'A'] = ÉTAT_ABSENTE
+				} else {
+					message.append( lettre )
+				}
+			}
+		}
+		return message.toString()
 	}
 
 	/**
