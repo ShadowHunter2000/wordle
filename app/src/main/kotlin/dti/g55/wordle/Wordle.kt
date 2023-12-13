@@ -100,10 +100,19 @@ class Wordle( motCherché : String ) {
 					lettres[lettre - 'A'] = ÉTAT_CORRECTE
 				}
 			} else if ( motCherché.contains( lettre ) && lettres[lettre - 'A'] != ÉTAT_CORRECTE ) {
-				message.append( lettre.lowercaseChar() )
-				lettres[lettre - 'A'] = ÉTAT_PRÉSENTE
+				if ( lettres[lettre - 'A'] != ÉTAT_CORRECTE ) {
+					message.append( lettre.lowercaseChar() )
+					lettres[lettre - 'A'] = ÉTAT_PRÉSENTE
+				} else {
+					message.append( '_' )
+				}
 			} else {
-				message.append( '_' )
+				if ( lettres[lettre - 'A'] != ÉTAT_CORRECTE ) {
+					message.append( '_' )
+					lettres[lettre - 'A'] = ÉTAT_ABSENTE
+				} else {
+					message.append( lettre )
+				}
 			}
 		}
 		return message.toString()
