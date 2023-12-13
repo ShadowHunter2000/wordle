@@ -62,7 +62,7 @@ class Wordle( motCherché : String ) {
 		val resultat = StringBuilder()
 		for ( i in 'A'..'Z' ) {
 			val index = i - 'A'
-			val etat = lettres[ index ]
+			val etat = lettres[index]
 			val etatLettre = when ( etat ) {
 				ÉTAT_INCONNUE -> '*'
 				ÉTAT_ABSENTE -> '_'
@@ -93,12 +93,16 @@ class Wordle( motCherché : String ) {
 		for ( i in essai.indices ) {
 			val lettre = essai[i].uppercaseChar()
 			if ( lettre == motCherché[i] ) {
-				message.append( lettre )
-			}
-			else if ( motCherché.contains( lettre ) ) {
+				if ( lettres[lettre - 'A'] == ÉTAT_CORRECTE ) {
+					message.append( lettre )
+				} else {
+					message.append( lettre )
+					lettres[lettre - 'A'] = ÉTAT_CORRECTE
+				}
+			} else if ( motCherché.contains( lettre ) && lettres[lettre - 'A'] != ÉTAT_CORRECTE ) {
 				message.append( lettre.lowercaseChar() )
-			}
-			else {
+				lettres[lettre - 'A'] = ÉTAT_PRÉSENTE
+			} else {
 				message.append( '_' )
 			}
 		}
